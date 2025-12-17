@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dil Ki Kitaab - Sajan</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #fce7f3;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden; 
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Header with blur effect */
+        .app-header {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(244, 114, 182, 0.2);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .header-logo {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            background: linear-gradient(to right, #f472b6, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo span.emoji {
+            -webkit-text-fill-color: initial;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.6rem;
+        }
+
+        /* Floating Hearts Animation */
+        .heart-particle {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: #f472b6; 
+            opacity: 0.3;
+            pointer-events: none;
+            border-radius: 50% 50% 0 50%;
+            transform: rotate(-45deg);
+            animation: float-up 12s infinite linear;
+        }
+        
+        @keyframes float-up {
+            0% { transform: translateY(110vh) rotate(-45deg) scale(0.8); opacity: 0; }
+            20% { opacity: 0.4; }
+            80% { opacity: 0.4; }
+            100% { transform: translateY(-15vh) rotate(-45deg) scale(1.2); opacity: 0; }
+        }
+
+        /* Main Glassmorphic Card */
+        .magic-card {
+            background: rgba(30, 41, 59, 0.92);
+            border: 1px solid rgba(244, 114, 182, 0.25);
+            max-height: 82vh;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: border-color 0.3s ease;
+        }
+
+        /* Language Tabs */
+        .lang-tab {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            padding: 4px 10px;
+            font-weight: 500;
+        }
+
+        .lang-tab.active {
+            color: #f472b6;
+            border-bottom: 2px solid #f472b6;
+            font-weight: 700;
+        }
+
+        /* Scroll Area Customization */
+        .scroll-area {
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #f472b6 transparent;
+            padding-right: 4px;
+        }
+        .scroll-area::-webkit-scrollbar { width: 4px; }
+        .scroll-area::-webkit-scrollbar-thumb { background: #f472b6; border-radius: 10px; }
+
+        /* Social Icons & Interactions */
+        .footer-socials {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            margin-top: 15px;
+        }
+
+        .social-link {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .social-link:hover {
+            transform: scale(1.2) translateY(-4px);
+            background: rgba(255, 255, 255, 0.1);
+            filter: drop-shadow(0 0 10px rgba(244, 114, 182, 0.4));
+        }
+
+        /* Error Shake Animation */
+        .error-shake { 
+            animation: shake 0.4s; 
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        /* Transitions */
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="header-logo">
+            <span class="emoji">✨</span>
+            Dil Ki Kitaab
+            <span class="emoji">💫</span>
+        </div>
+    </header>
+
+    <div id="hearts-container"></div>
+
+    <main class="flex-grow flex items-center justify-center p-4 pt-24">
+        <div id="main-card" class="magic-card w-full max-w-md p-6 sm:p-8 rounded-[2rem] text-center">
+            
+            <!-- Lock View -->
+            <div id="lock-view" class="fade-in">
+                <div class="text-6xl mb-4">🔐</div>
+                
+                <div class="flex justify-center space-x-4 mb-8 text-xs uppercase tracking-widest text-slate-400">
+                    <span id="tab-hindi" class="lang-tab" onclick="switchLang('hindi')">हिंदी</span>
+                    <span id="tab-english" class="lang-tab" onclick="switchLang('english')">English</span>
+                    <span id="tab-hinglish" class="lang-tab active" onclick="switchLang('hinglish')">Hinglish</span>
+                </div>
+
+                <h1 id="lock-title" class="text-2xl font-black mb-2 text-white">Private Message</h1>
+                <p id="lock-desc" class="text-slate-400 mb-8 text-sm italic">Sahi code daal kar secret panna kholiye.</p>
+
+                <div class="mb-6">
+                    <input type="password" id="secret-code-input" placeholder="Type secret code..."
+                           class="w-full bg-slate-800/80 border-2 border-slate-700 p-4 rounded-2xl text-center text-xl text-white focus:outline-none focus:border-pink-500 transition-all">
+                </div>
+
+                <button onclick="checkCode()" class="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-4 rounded-2xl shadow-lg transition-all transform active:scale-[0.97]">
+                    Panna Kholiye ✨
+                </button>
+                <p id="error-msg" class="text-red-400 mt-4 text-xs font-semibold opacity-0 transition-opacity">Galat Code!</p>
+            </div>
+
+            <!-- Message View -->
+            <div id="message-view" class="hidden scroll-area text-left h-full fade-in">
+                <h2 id="msg-title" class="text-2xl font-bold text-yellow-400 mb-6 text-center italic">📖 My Heart's Secret</h2>
+                
+                <div id="shayari-container" class="space-y-6 px-1">
+                    <!-- Cards injected via JS -->
+                </div>
+
+                <div class="mt-12 text-center pb-8 border-t border-slate-700/50 pt-8">
+                    <div class="text-3xl mb-3">💝</div>
+                    <!-- Name Changed to SAJAN -->
+                    <p class="text-xl font-black text-pink-500 tracking-tighter uppercase mb-1">SAJAN</p>
+                    <p id="footer-text" class="text-xs text-slate-400 font-medium tracking-[0.2em] uppercase mb-8">Hamesha Aapke Liye</p>
+                    
+                    <div class="bg-pink-500/10 py-4 px-5 rounded-2xl border border-pink-500/20 mb-8 mx-2">
+                        <p class="text-sm text-pink-200 italic font-medium leading-relaxed">
+                            Aapke ehsaas mere liye bohot keemti hain,<br>kaisa laga... bataiyega zaroor! ✨
+                        </p>
+                    </div>
+                    
+                    <div class="footer-socials">
+                        <!-- Updated Instagram Link sajan0_07 -->
+                        <a href="https://www.instagram.com/sajan0_07/" target="_blank" class="social-link" title="Instagram">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f472b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        <!-- Updated WhatsApp Number 6200783498 -->
+                        <a href="https://wa.me/916200783498?text=Sajan,%20maine%20aapka%20secret%20message%20panna%20padha...%20bohot%20accha%20laga!%20✨" target="_blank" class="social-link" title="WhatsApp">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 1 1-7.6-11.7 8.38 8.38 0 0 1 3.8.9L21 3z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="h-4"></div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const heartContainer = document.getElementById('hearts-container');
+        function createHearts() {
+            for(let i=0; i<12; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-particle';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = (Math.random() * 10) + 's';
+                heartContainer.appendChild(heart);
+            }
+        }
+        createHearts();
+
+        let selectedLang = 'hinglish'; 
+
+        const contentData = {
+            hindi: {
+                lockTitle: "गोपनीय संदेश",
+                lockDesc: "इस पन्ने को खोलने के लिए कोड डालें।",
+                msgTitle: "मेरे दिल की बात...",
+                error: "गलत कोड! फिर से कोशिश करें।",
+                footer: "हमेशा आपके लिए",
+                shayari: [
+                    "मुझे समझ नहीं आ रहा कि मैं आपकी बातों पर ध्यान दूँ या आपकी आँखों में खो जाऊं, दोनों ही बहुत कमाल हैं।",
+                    "आपको इम्प्रेस करने के लिए शब्दों की नहीं, सच्चे एहसासों की ज़रूरत है। आप मेरे लिए सिर्फ एक लड़की नहीं, मेरी हर सुबह की वजह हैं।",
+                    "आपकी हर बात मुझे मुस्कुराने पे मजबूर करती है। आई होप, यह छोटा सा इशारा आपके दिल को छू जाए।"
+                ]
+            },
+            english: {
+                lockTitle: "Secret Message",
+                lockDesc: "Enter the code to unlock this page.",
+                msgTitle: "Words from my Heart...",
+                error: "Wrong Code! Please try again.",
+                footer: "Always for you",
+                shayari: [
+                    "I can't decide whether to listen to your words or get lost in your eyes, both are absolutely amazing.",
+                    "To impress you, I don't need fancy words, just true feelings. You aren't just a girl to me, you're the reason behind my every morning.",
+                    "Everything you do makes me smile. I hope this small gesture touches your heart."
+                ]
+            },
+            hinglish: {
+                lockTitle: "Private Message",
+                lockDesc: "Sahi code daal kar secret panna kholiye.",
+                msgTitle: "Dil Ki Kuch Baatein...",
+                error: "Galat Code! Phir se try karo.",
+                footer: "Hamesha aapke liye",
+                shayari: [
+                    "Mujhe samajh nahi aa raha ki main aapki baaton par dhyan doon ya aapki aankhon mein kho jaoon, dono hi kamaal hain.",
+                    "Aapko impress karne ke liye shabdon ki nahi, sacche ehsaason ki zaroorat hai. Aap mere liye sirf ek ladki nahi, meri har subah ka reason hain.",
+                    "Aapki har baat mujhe muskurane pe majboor karti hai. I hope, yeh chhota sa gesture aapke dil ko chhoo jaye."
+                ]
+            }
+        };
+
+        window.onload = () => {
+            switchLang('hinglish');
+        };
+
+        function switchLang(lang) {
+            selectedLang = lang;
+            document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(`tab-${lang}`).classList.add('active');
+            
+            const data = contentData[lang];
+            document.getElementById('lock-title').innerText = data.lockTitle;
+            document.getElementById('lock-desc').innerText = data.lockDesc;
+            
+            if(document.getElementById('lock-view').style.display === 'none') {
+                renderContent();
+            }
+        }
+
+        function checkCode() {
+            const input = document.getElementById('secret-code-input');
+            const code = input.value.toLowerCase().trim();
+            const error = document.getElementById('error-msg');
+            
+            if(code === '143' || code === 'tum' || code === 'raz') {
+                renderContent();
+                document.getElementById('lock-view').style.display = 'none';
+                document.getElementById('message-view').classList.remove('hidden');
+            } else {
+                input.classList.add('error-shake');
+                error.innerText = contentData[selectedLang].error;
+                error.style.opacity = '1';
+                setTimeout(() => {
+                    input.classList.remove('error-shake');
+                    error.style.opacity = '0';
+                }, 1500);
+            }
+        }
+
+        function renderContent() {
+            const container = document.getElementById('shayari-container');
+            const langData = contentData[selectedLang];
+            container.innerHTML = '';
+            
+            document.getElementById('msg-title').innerText = langData.msgTitle;
+            document.getElementById('footer-text').innerText = langData.footer;
+
+            const borderColors = ['border-pink-500', 'border-purple-500', 'border-yellow-400'];
+            
+            langData.shayari.forEach((text, index) => {
+                const card = document.createElement('div');
+                card.className = `bg-slate-800/60 p-5 rounded-2xl border-l-4 ${borderColors[index % 3]} shadow-sm fade-in`;
+                card.style.animationDelay = (index * 0.15) + 's';
+                card.innerHTML = `<p class="text-xl text-white leading-relaxed italic font-serif">${text}</p>`;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
